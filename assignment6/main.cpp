@@ -9,7 +9,7 @@
 #include <vector>
 
 /** STUDENT_TODO: You will need to include a relevant header file here! */
-
+#include <optional>
 #include "autograder/utils.hpp"
 
 /**
@@ -52,10 +52,14 @@ public:
    * @param course_title The title of the course to find.
    * @return You will need to figure this out!
    */
-  FillMeIn find_course(std::string course_title)
+  std::optional<Course> find_course(std::string course_title)
   {
-    /* STUDENT_TODO: Implement this method! You will need to change the return
-     * type. */
+    for (const auto& course: courses){
+      if (course.title == course_title){
+        return course;
+      }
+    }
+    return {};
   }
 
 private:
@@ -81,8 +85,22 @@ main(int argc, char* argv[])
     Please pay special attention to the README here
     ********************************************************/
 
-    std::string output = /* STUDENT_TODO */
+    /*
+    * Both two below are right.
+    * The only thing differs is that if you use and_then or transform only,
+    * note that there return value is different (Depending on if you want a .value())
+    * Interesting.
+    */
 
+    // std::string output = course
+    //   .transform([](auto value) -> std::string { return "Found course: " + value.title + "," + value.number_of_units + "," + value.quarter; })
+    //   .or_else([]() -> std::optional<std::string> { return "Course not found."; })
+    //   .value();
+
+    std::string output = course
+      .and_then([](auto value) -> std::optional<std::string> { return "Found course: " + value.title + "," + value.number_of_units + "," + value.quarter; })
+      .or_else([]() -> std::optional<std::string> { return "Course not found."; })
+      .value();
     /********************************************************
      DO NOT MODIFY ANYTHING BELOW THIS LINE PLEASE
     ********************************************************/
